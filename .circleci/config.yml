@@ -10,7 +10,7 @@ jobs:
        only:
            - /sprint[1-6]/
     steps:
-      - pip install aws
+      - run: pip install aws
       - checkout
       - setup_remote_docker
       - run: echo "Hola mundo"
