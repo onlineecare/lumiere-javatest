@@ -10,7 +10,7 @@ jobs:
        only:
            - /sprint[1-6]/
     steps:
-      - run: pip install aws
+      - run: apt-get install awscli
       - checkout
       - setup_remote_docker
       - run: echo "Hola mundo"
