@@ -6,11 +6,15 @@ jobs:
         environment:
           SERVICE_NAME: lumiere-javatest
           REGISTRY_URL: 336627915605.dkr.ecr.eu-central-1.amazonaws.com
+          KUBERNETES_CONFIG_STORE: cluster-lumiere-dev-config
     branches:
        only:
            - /sprint[1-6]/
     steps:
-      - run: sudo apt-get install awscli 
+      - run: |
+          sudo apt-get install awscli
+          curl -LO https://storage.googleapis.com/kubernetes-release/release/$(curl -s https://storage.googleapis.com/kubernetes-release/release/stable.txt)/bin/linux/amd64/kubectl
+          chmod +x kubectl          
       - checkout
       - setup_remote_docker
       - run: echo "Hola mundo"
@@ -31,3 +35,5 @@ jobs:
           docker tag $SERVICE_NAME $REGISTRY_URL/$SERVICE_NAME:latest
           docker push $REGISTRY_URL/$SERVICE_NAME:build-$CIRCLE_SHA1
           docker push $REGISTRY_URL/$SERVICE_NAME:latest
+          aws s3 cp s3://$KUBERNETES_CONFIG_STORE/kubeconfig ~/.kube/config
+          kubectl set image deployment/${SERVICE_NAME} ${SERVICE_NAME}=${REGISTRY_URL}/${SERVICE_NAME}:build-${CIRCLE_SHA1}
