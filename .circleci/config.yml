@@ -38,4 +38,4 @@ jobs:
           docker push $REGISTRY_URL/$SERVICE_NAME:build-$CIRCLE_SHA1
           docker push $REGISTRY_URL/$SERVICE_NAME:latest
           aws s3 cp s3://$KUBERNETES_CONFIG_STORE/kubeconfig ~/.kube/config
-          kubectl set image deployment/${SERVICE_NAME} ${SERVICE_NAME}=${REGISTRY_URL}/${SERVICE_NAME}:build-${CIRCLE_SHA1}
+          ~/deployment/kubectl set image deployment/${SERVICE_NAME} ${SERVICE_NAME}=${REGISTRY_URL}/${SERVICE_NAME}:build-${CIRCLE_SHA1}
