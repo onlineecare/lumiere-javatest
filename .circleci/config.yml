@@ -13,8 +13,10 @@ jobs:
     steps:
       - run: |
           sudo apt-get install awscli
-          curl -LO https://storage.googleapis.com/kubernetes-release/release/$(curl -s https://storage.googleapis.com/kubernetes-release/release/stable.txt)/bin/linux/amd64/kubectl
-          chmod +x kubectl          
+          mkdir ~/deployment
+          SET PATH=$PATH:~/deployment
+          curl -L -o ~/deployment/kubectl https://storage.googleapis.com/kubernetes-release/release/$(curl -s https://storage.googleapis.com/kubernetes-release/release/stable.txt)/bin/linux/amd64/kubectl
+          chmod +x ~/deployment/kubectl          
       - checkout
       - setup_remote_docker
       - run: echo "Hola mundo"
