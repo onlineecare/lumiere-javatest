@@ -1,0 +1,22 @@
+version: 2
+jobs:
+  build:
+    docker:
+      - image: circleci/openjdk:8-jdk-browsers
+        environment:
+          SERVICE_NAME: lumiere-javatest
+    branches:
+       only:
+           - /sprint[1-6]/
+    steps:
+      - checkout
+      - run: echo "Hola mundo"
+      - restore_cache:
+          key: ${SERVICE_NAME}-{{ checksum "pom.xml" }}
+      - run: mvn dependency:go-offline
+      - save_cache:
+          paths:
+            - ~/.m2
+          key: ${SERVICE_NAME}-{{ checksum "pom.xml" }}
+      
+      - run: mvn package      
