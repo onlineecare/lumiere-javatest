@@ -5,11 +5,13 @@ jobs:
       - image: circleci/openjdk:8-jdk-browsers
         environment:
           SERVICE_NAME: lumiere-javatest
+          REGISTRY_URL: 336627915605.dkr.ecr.eu-central-1.amazonaws.com
     branches:
        only:
            - /sprint[1-6]/
     steps:
       - checkout
+      - setup_remote_docker
       - run: echo "Hola mundo"
       - restore_cache:
           key: ${SERVICE_NAME}-{{ checksum "pom.xml" }}
@@ -17,6 +19,14 @@ jobs:
       - save_cache:
           paths:
             - ~/.m2
-          key: ${SERVICE_NAME}-{{ checksum "pom.xml" }}
-      
+          key: ${SERVICE_NAME}-{{ checksum "pom.xml" }}      
       - run: mvn package      
+      - run: |
+          docker build -t ${SERVICE_NAME} -f Dockerfile .
+          aws configure set default.region eu-central-1
+          aws configure set default.output json
+          eval $(aws ecr get-login --region eu-central-1)
+          docker tag $SERVICE_NAME $REGISTRY_URL/$SERVICE_NAME:build-$CIRCLE_SHA1
+          docker tag $SERVICE_NAME $REGISTRY_URL/$SERVICE_NAME:latest
+          docker push $REGISTRY_URL/$SERVICE_NAME:build-$CIRCLE_SHA1
+          docker push $REGISTRY_URL/$SERVICE_NAME:latest
