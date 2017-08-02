@@ -14,7 +14,7 @@ jobs:
       - run: |
           sudo apt-get install awscli
           mkdir ~/deployment
-          SET PATH=$PATH:~/deployment
+          export PATH=$PATH:~/deployment
           curl -L -o ~/deployment/kubectl https://storage.googleapis.com/kubernetes-release/release/$(curl -s https://storage.googleapis.com/kubernetes-release/release/stable.txt)/bin/linux/amd64/kubectl
           chmod +x ~/deployment/kubectl          
       - checkout
