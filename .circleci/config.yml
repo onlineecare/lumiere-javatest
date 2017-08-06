@@ -2,7 +2,7 @@ version: 2
 jobs:
   build:
     docker:
-#      - image: circleci/openjdk:8-jdk-browsers
+      - image: circleci/openjdk:8-jdk-browsers
         environment:
           SERVICE_NAME: lumiere-javatest
           REGISTRY_URL: 336627915605.dkr.ecr.eu-central-1.amazonaws.com
@@ -12,6 +12,7 @@ jobs:
            - /sprint[1-6]/
     steps:
       - run: |
+          sudo apt-get install awscli
           mkdir ~/deployment
           export PATH=$PATH:~/deployment
           curl -L -o ~/deployment/kubectl https://storage.googleapis.com/kubernetes-release/release/$(curl -s https://storage.googleapis.com/kubernetes-release/release/stable.txt)/bin/linux/amd64/kubectl
