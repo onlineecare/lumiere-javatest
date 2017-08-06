@@ -3,7 +3,6 @@ jobs:
   build:
     docker:
 #      - image: circleci/openjdk:8-jdk-browsers
-      - image: circleci/build-image:ubuntu-14.04-XXL-1239-04cfc8d
         environment:
           SERVICE_NAME: lumiere-javatest
           REGISTRY_URL: 336627915605.dkr.ecr.eu-central-1.amazonaws.com
