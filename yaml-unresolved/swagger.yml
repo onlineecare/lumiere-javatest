@@ -1,0 +1,177 @@
+swagger: '2.0'
+info:
+  version: '1.0.0'
+  title: 'Ticket API lumiere'
+  description: |
+    # Lumiere Back Ticket API
+
+    ## Security:
+    Paths | Authorization header request parameter
+    ----- |---------
+    **Every** path | required with Bearer access token value. e.g. *Bearer [access token]*
+    
+    --------------     
+
+#    ## General Error codes:
+#    This general errors can be returned by any operation responses
+
+#    code | description
+#    --- | ---
+#    KOGEN03 | Business resource not found
+#    KOGEN04 | Internal service error
+#    KOGEN05 | Internal data access (bbdd) error
+#    KOTIB01 | Error returned by gateway TI Backend API
+#    KOTIB02 | Error while trying to invoke gateway TI Backend API
+
+tags:
+- name: ticket
+  description: Ticket related services
+
+paths:
+
+  '/customers/{id}/tickets':          
+    post:
+      tags: 
+        - ticket
+      summary: Create ticket
+      description: Create ticket for support
+      operationId: createTicket
+      consumes:
+        - application/json
+      produces:
+        - application/json
+      parameters:
+        - name: id
+          in: path
+          description: Customer id
+          required: true
+          type: string
+        - name: ticket
+          in: body
+          description: New ticket to open for support
+          required: true
+          schema:
+            $ref: '#/definitions/Ticket'
+
+      responses:
+        201:
+          description: OK, ticket returned
+          schema:
+            $ref: '#/definitions/TicketCreated'          
+          examples:
+            application/json:
+              {
+                "id": "14",
+                "description": "Some Description",
+                "type": "Payment",
+                "severity": "High",
+                "creationDate": "2015-04-14T17:14:29UTC",
+                "status": "Submitted",
+                "relatedObject": [
+                  {
+                    "involvement": "952126456",
+                    "reference": "fixed"
+                  }
+                ]
+              }
+        400:
+          description: Validation data errors
+          schema:
+            $ref: '#/definitions/Error' 
+
+            
+definitions:
+
+  Error:
+    type: object
+    required:
+    - code
+    - message
+    properties:
+      code:
+        type: string
+        description: error code
+        example: KOGEN01
+      message:
+        type: string
+        description: error message
+        example: Parameter must not be null
+      description:
+        type: string
+        description: additional error description
+        example: additional error description      
+      
+  Ticket:
+    type: object
+    description: Specification of user support ticket
+    example:
+      {
+        "description": "Some trouble description",
+        "type": "Payment",
+        "relatedObject": 
+          {
+            "involvement": "952126456",
+            "reference": "fixed"
+          }
+      }
+    properties:
+      description:
+        type: string
+        description: ticket description
+        example: Some trouble description
+      type:
+        type: string
+        description: ticket type. Eventually this could be an enum. For now we keep string type until we receive the proper JIRA subcategory codes
+        example: Payment
+      relatedObject:
+        $ref: '#/definitions/TicketObject'
+
+  TicketObject:
+    type: object
+    description: Specification of ticket related object
+    properties:
+      involvement:
+        type: string
+        description: MSISDN
+        example: Some trouble description
+      reference:
+        type: string
+        description: product type. Eventually this could be an enum. For now we keep string type until we receive the proper enum values
+        example: fixed
+
+  TicketCreated:
+    type: object
+    description: Specification of created user support ticket
+    properties:
+      id:
+        type: string
+        description: ticket ID
+        example: 14
+      description:
+        type: string
+        description: ticket description
+        example: Some trouble description
+      type:
+        type: string
+        description: ticket type. Eventually this could be an enum. For now we keep string type until we receive the proper JIRA subcategory codes
+        example: Payment
+      severity:
+        type: string
+        description: ticket severity. Eventually this could be an enum. For now we keep string type until we receive the proper info from IT
+        example: High
+      creationDate:
+        type: string
+        description: ticket creation date. Pending to confirm format
+        example: 2015-04-14T17:14:29UTC
+      status:
+        type: string
+        description: resolution ticket status. Eventually this could be an enum. For now we keep string type until we receive the proper info from IT
+        example: Submitted
+      relatedObject:
+        $ref: '#/definitions/TicketObject'
+        
+# Added by API Auto Mocking Plugin
+host: virtserver.swaggerhub.com
+basePath: /minsait.lumiere/lumiere-ticket-api/1.0.0
+schemes:
+ - https
