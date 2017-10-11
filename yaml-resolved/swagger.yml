@@ -10,7 +10,7 @@ host: "virtserver.swaggerhub.com"
 basePath: "/minsait.lumiere/lumiere-ticket-api/1.0.0"
 tags:
 - name: "ticket"
-  description: "Ticket related services"
+  description: "Ticket related services 1"
 schemes:
 - "https"
 paths:
