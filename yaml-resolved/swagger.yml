@@ -1,0 +1,145 @@
+---
+swagger: "2.0"
+info:
+  description: "# Lumiere Back Ticket API\n\n## Security:\nPaths | Authorization header\
+    \ request parameter\n----- |---------\n**Every** path | required with Bearer access\
+    \ token value. e.g. *Bearer [access token]*\n\n--------------     \n"
+  version: "1.0.0"
+  title: "Ticket API lumiere"
+host: "virtserver.swaggerhub.com"
+basePath: "/minsait.lumiere/lumiere-ticket-api/1.0.0"
+tags:
+- name: "ticket"
+  description: "Ticket related services"
+schemes:
+- "https"
+paths:
+  /customers/{id}/tickets:
+    post:
+      tags:
+      - "ticket"
+      summary: "Create ticket"
+      description: "Create ticket for support"
+      operationId: "createTicket"
+      consumes:
+      - "application/json"
+      produces:
+      - "application/json"
+      parameters:
+      - name: "id"
+        in: "path"
+        description: "Customer id"
+        required: true
+        type: "string"
+      - in: "body"
+        name: "ticket"
+        description: "New ticket to open for support"
+        required: true
+        schema:
+          $ref: "#/definitions/Ticket"
+      responses:
+        201:
+          description: "OK, ticket returned"
+          schema:
+            $ref: "#/definitions/TicketCreated"
+          examples:
+            application/json:
+              id: "14"
+              description: "Some Description"
+              type: "Payment"
+              severity: "High"
+              creationDate: "2015-04-14T17:14:29UTC"
+              status: "Submitted"
+              relatedObject:
+              - involvement: "952126456"
+                reference: "fixed"
+        400:
+          description: "Validation data errors"
+          schema:
+            $ref: "#/definitions/Error"
+definitions:
+  Error:
+    type: "object"
+    required:
+    - "code"
+    - "message"
+    properties:
+      code:
+        type: "string"
+        example: "KOGEN01"
+        description: "error code"
+      message:
+        type: "string"
+        example: "Parameter must not be null"
+        description: "error message"
+      description:
+        type: "string"
+        example: "additional error description"
+        description: "additional error description"
+  Ticket:
+    type: "object"
+    properties:
+      description:
+        type: "string"
+        example: "Some trouble description"
+        description: "ticket description"
+      type:
+        type: "string"
+        example: "Payment"
+        description: "ticket type. Eventually this could be an enum. For now we keep\
+          \ string type until we receive the proper JIRA subcategory codes"
+      relatedObject:
+        $ref: "#/definitions/TicketObject"
+    description: "Specification of user support ticket"
+    example:
+      description: "Some trouble description"
+      type: "Payment"
+      relatedObject:
+        involvement: "952126456"
+        reference: "fixed"
+  TicketObject:
+    type: "object"
+    properties:
+      involvement:
+        type: "string"
+        example: "Some trouble description"
+        description: "MSISDN"
+      reference:
+        type: "string"
+        example: "fixed"
+        description: "product type. Eventually this could be an enum. For now we keep\
+          \ string type until we receive the proper enum values"
+    description: "Specification of ticket related object"
+  TicketCreated:
+    type: "object"
+    properties:
+      id:
+        type: "string"
+        example: "14"
+        description: "ticket ID"
+      description:
+        type: "string"
+        example: "Some trouble description"
+        description: "ticket description"
+      type:
+        type: "string"
+        example: "Payment"
+        description: "ticket type. Eventually this could be an enum. For now we keep\
+          \ string type until we receive the proper JIRA subcategory codes"
+      severity:
+        type: "string"
+        example: "High"
+        description: "ticket severity. Eventually this could be an enum. For now we\
+          \ keep string type until we receive the proper info from IT"
+      creationDate:
+        type: "string"
+        example: "2015-04-14T17:14:29UTC"
+        description: "ticket creation date. Pending to confirm format"
+      status:
+        type: "string"
+        example: "Submitted"
+        description: "resolution ticket status. Eventually this could be an enum.\
+          \ For now we keep string type until we receive the proper info from IT"
+      relatedObject:
+        $ref: "#/definitions/TicketObject"
+    description: "Specification of created user support ticket"
